@@ -1,0 +1,16 @@
+{
+  "apps" : [
+    {
+      "name"        : "frontend",
+      "script"      : "src/index.js",
+      "watch"       : true,
+      "env": {
+          "NODE_ENV": "production"
+      }
+    },
+    {
+      "name"       : "api",
+      "script"     : "src/server.js",
+    }
+  ]
+}
