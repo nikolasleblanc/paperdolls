@@ -10,7 +10,7 @@ var randomHex = require('random-hex');
 
 var apiURL = 'http://localhost:3001';
 
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/paperdolls');
 
 var db = mongoose.connection;
 

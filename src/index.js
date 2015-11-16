@@ -5,7 +5,7 @@ var rest = require('restling');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var apiURL = 'http://localhost:3001';
+var apiURL = 'http://107.170.165.23:3001';
 var app = express();
 app.use('/images', express.static('images'));
 
@@ -29,7 +29,7 @@ app.post('/submit', function (req, res) {
       tokenReceived: req.body.token,
       tokenSent: response.data._id
     }).then(function(response) {
-      res.send("<a href='http://localhost:3000/" + response.data.tokenSent + "'>Next</a>");
+      res.send("<a href='/" + response.data.tokenSent + "'>Next</a>");
     })
   }, function(err) {
     console.log(err);
@@ -61,7 +61,7 @@ app.get('/:id', function (req, res) {
       rest.get(apiURL + '/rest/tokens/' + req.params.id).then(function(tokensResponse) {
         if (tokensResponse.data.isActive) {
           response += "<h1>Add your name to the chain</h1>" +
-            "<form method='post' action='http://localhost:3000/submit'>" +
+            "<form method='post' action='/submit'>" +
               "<input type='text' name='name'></input>" +
               "<input type='text' name='message'></input>" +
               "<input type='hidden' name='token' value='" + req.params.id + "'></input>" +
