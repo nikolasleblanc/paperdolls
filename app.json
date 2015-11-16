@@ -7,6 +7,10 @@
       "env": {
           "NODE_ENV": "production"
       }
+    },
+    {
+      "name"       : "api",
+      "script"     : "src/server.js",
     }
   ]
 }

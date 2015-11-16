@@ -8,7 +8,26 @@ var rest = require('restling');
 var bodyParser = require('body-parser');
 var randomHex = require('random-hex');
 
-var apiURL = 'http://localhost:3001';
+var nodemailer = require('nodemailer');
+//var mandrillTransport = require('nodemailer-mandrill-transport');
+var smtpTransport = require('nodemailer-smtp-transport');
+
+var transport = nodemailer.createTransport(smtpTransport({
+    host: 'smtp.mandrillapp.com',
+    port: 587,
+    auth: {
+        user: 'nikolas.leblanc@gmail.com',
+        pass: process.env.PD_MANDRILL_KEY
+    }
+}));
+
+/*
+var transport = nodemailer.createTransport(mandrillTransport({
+  auth: {
+    apiKey: process.env.PD_MANDRILL_KEY
+  }
+}));
+*/
 
 mongoose.connect('mongodb://localhost/paperdolls');
 
@@ -77,17 +96,35 @@ app.post('/rest/paperdolls', function(req, res) {
   var message = req.body.message;
   var tokenReceived = req.body.tokenReceived;
   var tokenSent = req.body.tokenSent;
+  var country = req.body.country;
+  var emailReceived = req.body.emailReceived;
+  var emailSent = req.body.emailSent;
 
   var paperDoll = new PaperDoll({
     name: name,
     message: message,
     tokenReceived: tokenReceived,
     tokenSent: tokenSent,
+    emailReceived: emailReceived,
+    emailSent: emailSent,
+    country: country,
     color: randomHex.generate()
   });
 
   paperDoll.save(function (err, paperDoll) {
-    res.send(paperDoll);
+    transport.sendMail({
+      from: emailReceived,
+      to: emailSent,
+      subject: 'Please add your name to the chain',
+      html: '<p>Show your support for a world of tolerance and not terror by following this link:<br/><a href="' + process.env.PD_SERVER_URL + '/' + tokenSent + '">' + process.env.PD_SERVER_URL + '/' + tokenSent + '</a></p>'
+    }, function(err, info) {
+      if (err) {
+        console.log("error", err);
+      } else {
+        console.log("Email sent", info);
+        res.send(paperDoll);
+      }
+    });
   });
 });
 

@@ -5,7 +5,7 @@ var rest = require('restling');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var apiURL = 'http://107.170.165.23:3001';
+var apiURL = process.env.PD_API_URL || 'http://localhost:300';
 var app = express();
 app.use('/images', express.static('images'));
 
@@ -27,9 +27,12 @@ app.post('/submit', function (req, res) {
       name: req.body.name,
       message: req.body.message,
       tokenReceived: req.body.token,
-      tokenSent: response.data._id
+      tokenSent: response.data._id,
+      country: req.body.country,
+      emailReceived: req.body.emailReceived,
+      emailSent: req.body.emailSent
     }).then(function(response) {
-      res.send("<a href='/" + response.data.tokenSent + "'>Next</a>");
+      res.redirect('/thankyou');
     })
   }, function(err) {
     console.log(err);
@@ -62,8 +65,11 @@ app.get('/:id', function (req, res) {
         if (tokensResponse.data.isActive) {
           response += "<h1>Add your name to the chain</h1>" +
             "<form method='post' action='/submit'>" +
-              "<input type='text' name='name'></input>" +
-              "<input type='text' name='message'></input>" +
+              "Your name: <input type='text' name='name'></input><br/>" +
+              "Your message: <input type='text' name='message'></input><br/>" +
+              "Your country: <input type='text' name='country'></input><br/>" +
+              "Your email: <input type='email' name='emailReceived'></input><br/>" +
+              "Email of who you'd like to be next on the chain: <input type='email' name='emailSent'></input><br/>" +
               "<input type='hidden' name='token' value='" + req.params.id + "'></input>" +
               "<input type='submit' value='submit'></input>" +
             "</form>";
@@ -73,7 +79,12 @@ app.get('/:id', function (req, res) {
       });
     }
     else {
-      response += "<h1>It's not your turn yet. [Explain the idea]. [Explain what can be done in the meantime.]</h1>";
+      if (req.params.id === 'thankyou') {
+        response += "<h1>Thank you for being a part of this chain.</h1>";
+      }
+      else {
+        response += "<h1>It's not your turn yet. [Explain the idea]. [Explain what can be done in the meantime.]</h1>";
+      }
       res.send(response);
     }
   })

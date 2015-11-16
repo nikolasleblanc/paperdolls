@@ -8,6 +8,9 @@ var paperDollSchema = mongoose.Schema({
   'message': String,
   'tokenReceived': String,
   'tokenSent': String,
+  'country': String,
+  'emailReceived': String,
+  'emailSent': String,
   'color': String,
   'created': {
       type: Date,

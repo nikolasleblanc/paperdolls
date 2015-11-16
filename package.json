@@ -15,6 +15,9 @@
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "mongoose": "^4.2.5",
+    "nodemailer": "^1.10.0",
+    "nodemailer-mandrill-transport": "^0.3.0",
+    "nodemailer-smtp-transport": "^1.0.4",
     "random-hex": "^1.0.2",
     "restling": "^0.9.1"
   }
